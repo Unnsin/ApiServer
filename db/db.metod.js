@@ -3,9 +3,15 @@ const User = require('../db/model/Users');
 var mongoose = require('mongoose');
 var passwordHash = require('password-hash');
 
+
+
 function CreateUser(body){
     const user = new User(body);
     return user.save();
+}
+
+function authorization(email){
+    return User.findOne({"Email" : email});
 }
 
 function GetClients(){
@@ -42,4 +48,5 @@ module.exports = {
     CreateClient:CreateClient,
     FilterClient:FilterClient,
     CreateUser: CreateUser,
+    Authorization:authorization,
 };
