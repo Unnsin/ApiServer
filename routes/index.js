@@ -5,6 +5,11 @@ var JWT = require('jsonwebtoken');
 var mongoose = require('mongoose');
 const Client = require('../db/model/Clients');
 var DBMethod = require('../db/db.metod');
+const io = require('../sockets/socets');
+
+var editClient= require('../sockets/sockets.method').editClient;
+var deleteClient = require('../sockets/sockets.method').deleteClient;
+var createClient = require('../sockets/sockets.method').createClient;
 
 var router = express.Router();
 
@@ -27,9 +32,13 @@ router.all('/*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+    now = new Date();
+    houre = now.getHours();
+    minuts = now.getMinutes();
+    second = now.getSeconds();
+    console.log(`Время: ${houre}:${minuts}:${second} Метод:${req.method} Адрес: ${req.path}`)
     next();
 });
-
 router.get('/users', (req, res) => {
     GetClients()
         .then(respons => { res.json(respons) });    
@@ -64,18 +73,19 @@ router.get('/user/:id', (req, res) => {
 });
 
 router.get('/search/:id', (req, res) => {
-    console.log(req.params.id);
     FilterClient(req.params.id)
         .then(respons => { res.json(respons) });
 });
 
 router.post('/edit/:id', (req, res) => {
     EditClient(req.params.id, req.body)
+        .then(respons => {editClient(respons); return respons;})
         .then(respons => {res.json(respons)});
 });
 
 router.post('/create', (req, res) => {
     CreateClient(req.body)
+        .then(respons => { createClient(respons); return respons;})
         .then(respons => { res.json(respons) });
 });
 
@@ -83,6 +93,7 @@ router.post('/create', (req, res) => {
 router.get('/delete/:id', (req, res) => {
     if(req.user.role === 2){
         DeleteClient(req.params.id)
+            .then(respons => { deleteClient(req.params.id); return respons;})
             .then(respons => { res.status(200).send() });
     }else{
         res.status(403).send();

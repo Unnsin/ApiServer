@@ -6,8 +6,9 @@ var db = require('./db/index');
 
 app.use('', router);
 
+const port = 4200;
 
 
-app.listen(4200,function(){
-    console.log("Server start work on 4200 port");
+app.listen(port, () => {
+    console.log('Api Server listening on port ', port);
 });
