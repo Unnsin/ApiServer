@@ -4,18 +4,31 @@
   "description": "",
   "main": "Server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist --presets env",
+    "watch": "babel src -d dist --presets env -w",
+    "start": "nodemon --require 'dotenv' --require 'babel-register' dist/Server.js",
+    "dev": "node dist/Server.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "express": "^4.16.3"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
     "bcrypt": "^2.0.1",
+    "docker": "^1.0.0",
+    "dotenv": "^5.0.1",
     "express-jwt": "^5.3.1",
+    "gravatar": "^1.6.0",
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.1.1",
+    "nodemon": "^1.17.5",
     "passport-jwt": "^4.0.0",
     "password-hash": "^1.2.2",
     "socket.io": "^2.1.1"
