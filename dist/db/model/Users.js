@@ -8,7 +8,8 @@ var userSchema = mongoose.Schema({
     "password": String,
     "role": Number,
     "token": String,
-    "avatar": String
+    "avatar": String,
+    "online": Boolean
 });
 
 var User = mongoose.model('Users', userSchema);

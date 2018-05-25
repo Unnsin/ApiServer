@@ -3,15 +3,25 @@ const User = require('../db/model/Users');
 var mongoose = require('mongoose');
 var passwordHash = require('password-hash');
 
-
-
 function CreateUser(body){
     const user = new User(body);
     return user.save();
 }
 
 function authorization(email){
-    return User.findOne({"Email" : email});
+    User.findOneAndUpdate({"Email" : email}, {  $set: {"online":true} }, () => {
+        
+    });
+    return User.findOne({"Email" : email});    
+}
+
+function ofLine(token){
+    User.findOneAndUpdate({"token" : token}, {  $set: {"online":false} }, (user)=>{
+    });
+}
+
+function getOnlineUsers() {
+    return User.find({ "online":true });
 }
 
 function GetClients(){
@@ -49,4 +59,6 @@ module.exports = {
     FilterClient:FilterClient,
     CreateUser: CreateUser,
     Authorization:authorization,
+    getOnlineUsers:getOnlineUsers,
+    ofLine:ofLine,
 };

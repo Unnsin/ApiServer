@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema({
     "role": Number,
     "token": String,
     "avatar": String,
+    "online": Boolean,
 });
 
 const User = mongoose.model('Users', userSchema);

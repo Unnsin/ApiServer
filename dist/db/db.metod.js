@@ -11,7 +11,16 @@ function CreateUser(body) {
 }
 
 function authorization(email) {
+    User.findOneAndUpdate({ "Email": email }, { $set: { "online": true } }, function () {});
     return User.findOne({ "Email": email });
+}
+
+function ofLine(token) {
+    User.findOneAndUpdate({ "token": token }, { $set: { "online": false } }, function (user) {});
+}
+
+function getOnlineUsers() {
+    return User.find({ "online": true });
 }
 
 function GetClients() {
@@ -48,5 +57,7 @@ module.exports = {
     CreateClient: CreateClient,
     FilterClient: FilterClient,
     CreateUser: CreateUser,
-    Authorization: authorization
+    Authorization: authorization,
+    getOnlineUsers: getOnlineUsers,
+    ofLine: ofLine
 };

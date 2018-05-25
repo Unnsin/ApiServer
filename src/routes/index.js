@@ -25,6 +25,8 @@ var DeleteClient = DBMethod.DeletClient;
 var CreateClient = DBMethod.CreateClient;
 var FilterClient = DBMethod.FilterClient;
 var CreateUser = DBMethod.CreateUser;
+var GetUser = DBMethod.GetUser;
+var getOnlineUsers = DBMethod.getOnlineUsers;
 
 router.use(express.json());
 
@@ -44,7 +46,13 @@ router.get('/users', (req, res) => {
         .then(respons => { res.json(respons) });    
 });
 
-router.use(ExpressJwt({ secret: process.env.SECRET_KEY}).unless({path: ['/users', /\/user\/.*/, /\/search\/.*/, '/signin', '/signup']}));
+router.use(ExpressJwt({ secret: process.env.SECRET_KEY}).unless({path: ['/users', /\/user\/.*/, /\/search\/.*/, '/signin', '/signup', '/clients']}));
+
+
+router.get('/clients', (req, res)=>{
+    getOnlineUsers()
+        .then(respons => {res.json(respons)});
+});
 
 router.post('/signin', (req, res) => {
     Authorization(req.body.email)
@@ -59,6 +67,7 @@ router.post('/signup', (req, res) => {
     bcrypt.hash(req.body.password, saltRounds).then(function(hash) {
         req.body.avatar = gravatar.url(req.body.Email, {protocol: 'http', s: '100'});
         req.body.password = hash;
+        req.body.online = false;
         req.body.role = 1;
         JWT.sign({role:req.body.role, email: req.body.email},  process.env.SECRET_KEY, (err,token) => {
             req.body.token = token;

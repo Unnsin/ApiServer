@@ -1,12 +1,18 @@
 var io = require('socket.io')();
 import dotenv from 'dotenv';
 dotenv.config();
-
+var ofLine = require('../db/db.metod').ofLine;
 io.listen(process.env.SOCKET_PORT);
 console.log('Socket.io listening on port ', process.env.SOCKET_PORT);
 
+setInterval(()=>{io.emit('getOnline')},5000);
+
 io.on('connection', (client) => {
-    console.log('connaction for sokects');
+    client.emit('giveMeToken');
+    client.on('message', (token) => {
+        client.token = token;
+    })
+    console.log('connaction for sokects')
     client.on('edit', (user)=>{
         client.broadcast.emit('edit', user);
     })
@@ -16,7 +22,12 @@ io.on('connection', (client) => {
     client.on('create', (user) => {
         client.broadcast.emit('create', user);
     });
-    
+    client.on('disconnect', (token) => {
+        console.log('disconnect');
+        ofLine(client.token);
+    })
 });
+
+
 
 module.exports = io;

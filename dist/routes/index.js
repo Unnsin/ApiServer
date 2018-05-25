@@ -54,6 +54,8 @@ var DeleteClient = _db2.default.DeletClient;
 var CreateClient = _db2.default.CreateClient;
 var FilterClient = _db2.default.FilterClient;
 var CreateUser = _db2.default.CreateUser;
+var GetUser = _db2.default.GetUser;
+var getOnlineUsers = _db2.default.getOnlineUsers;
 
 router.use(_express2.default.json());
 
@@ -74,7 +76,13 @@ router.get('/users', function (req, res) {
     });
 });
 
-router.use((0, _expressJwt2.default)({ secret: process.env.SECRET_KEY }).unless({ path: ['/users', /\/user\/.*/, /\/search\/.*/, '/signin', '/signup'] }));
+router.use((0, _expressJwt2.default)({ secret: process.env.SECRET_KEY }).unless({ path: ['/users', /\/user\/.*/, /\/search\/.*/, '/signin', '/signup', '/clients'] }));
+
+router.get('/clients', function (req, res) {
+    getOnlineUsers().then(function (respons) {
+        res.json(respons);
+    });
+});
 
 router.post('/signin', function (req, res) {
     Authorization(req.body.email).then(function (respons) {
@@ -88,6 +96,7 @@ router.post('/signup', function (req, res) {
     _bcrypt2.default.hash(req.body.password, saltRounds).then(function (hash) {
         req.body.avatar = _gravatar2.default.url(req.body.Email, { protocol: 'http', s: '100' });
         req.body.password = hash;
+        req.body.online = false;
         req.body.role = 1;
         _jsonwebtoken2.default.sign({ role: req.body.role, email: req.body.email }, process.env.SECRET_KEY, function (err, token) {
             req.body.token = token;
