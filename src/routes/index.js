@@ -48,7 +48,6 @@ router.get('/users', (req, res) => {
 
 router.use(ExpressJwt({ secret: process.env.SECRET_KEY}).unless({path: ['/users', /\/user\/.*/, /\/search\/.*/, '/signin', '/signup', '/clients']}));
 
-
 router.get('/clients', (req, res)=>{
     getOnlineUsers()
         .then(respons => {res.json(respons)});

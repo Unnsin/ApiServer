@@ -20,6 +20,11 @@ function ofLine(token){
     });
 }
 
+function onLine(token){
+    User.findOneAndUpdate({"token" : token}, {  $set: {"online":true} }, (user)=>{
+    });
+}
+
 function getOnlineUsers() {
     return User.find({ "online":true });
 }
@@ -61,4 +66,5 @@ module.exports = {
     Authorization:authorization,
     getOnlineUsers:getOnlineUsers,
     ofLine:ofLine,
+    onLine:onLine
 };

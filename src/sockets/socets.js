@@ -2,6 +2,7 @@ var io = require('socket.io')();
 import dotenv from 'dotenv';
 dotenv.config();
 var ofLine = require('../db/db.metod').ofLine;
+var onLine = require('../db/db.metod').onLine;
 io.listen(process.env.SOCKET_PORT);
 console.log('Socket.io listening on port ', process.env.SOCKET_PORT);
 
@@ -11,6 +12,7 @@ io.on('connection', (client) => {
     client.emit('giveMeToken');
     client.on('message', (token) => {
         client.token = token;
+        onLine(client.token);
     })
     console.log('connaction for sokects')
     client.on('edit', (user)=>{
